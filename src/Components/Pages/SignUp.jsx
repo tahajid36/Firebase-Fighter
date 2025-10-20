@@ -4,11 +4,30 @@ import { FaEye } from "react-icons/fa";
 
 import { IoEyeOff } from "react-icons/io5";
 import MyContainer from "../Container/MyContainer";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase.config";
+import { useState } from "react";
 
 
 
 
 const SignUp = () => {
+  const [show, setShow] = useState(false)
+
+  const handlesignIn = (e) => {
+    e.preventDefault()
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    console.log({email, password})
+    createUserWithEmailAndPassword(auth, email, password)
+    .then(res=>{
+      // toast('User Signed Up Successfully')
+      console.log(res.user)
+    })
+    .catch(error=>{
+      alert(error.message)
+    })
+  }
   
 
   return (
@@ -37,7 +56,7 @@ const SignUp = () => {
              Sign Up
            </h2>
 
-           <form  className="space-y-4">
+           <form onSubmit={handlesignIn}  className="space-y-4">
              <div>
                <label className="block text-sm font-medium mb-1">Email</label>
                <input
@@ -53,20 +72,22 @@ const SignUp = () => {
                  Password
                </label>
                <input
-                 
+                 type={show ? 'text' : 'password'}
                  name="password"
                  placeholder="••••••••"
                  className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-pink-400"
                />
+               {/* Conditions for showing password eye icon  */}
                <span
-                
+                onClick={()=>setShow(!show)}
                  className="absolute right-[8px] top-[36px] cursor-pointer z-50"
                >
+                {show ? <FaEye/>: <IoEyeOff/>}
                 
                </span>
              </div>
 
-             <button type="submit" className="my-btn ">
+             <button type="submit" className="btn w-full border-none bg-linear-to-bl from-violet-500 to-fuchsia-500 ">
                Sign Up
              </button>
 
